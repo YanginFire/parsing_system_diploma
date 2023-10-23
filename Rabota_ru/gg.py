@@ -2,13 +2,16 @@ import requests
 import pandas as pd
 import time
 
+text = ''
+offset = 1
 
-def get_job_description(vacancy):
-    return vacancy['snippet']['requirement']
-
-
+params = {
+        "text": text,
+        "limit": 100,
+        "offset": offset,
+    }
 url = "http://opendata.trudvsem.ru/api/v1/vacancies"
-response = requests.get(url)
+response = requests.get(url,params=params)
 
 if response.status_code == 200:
     vacancies = response.json()["results"]["vacancies"]
@@ -23,14 +26,12 @@ if response.status_code == 200:
         city = names_of_vacancies["vacancy"]["region"]["name"]
         employer = names_of_vacancies["vacancy"]["company"]["name"]
 
-
         if 'qualification' in names_of_vacancies['vacancy']['requirement']:
             skills = names_of_vacancies['vacancy']['requirement']['qualification']
             print(f"Номер {i + 1}", skills)
         else:
             skills = ''
             print(f"Номер {i + 1}", skills)
-
 
         time.sleep(3)
 
