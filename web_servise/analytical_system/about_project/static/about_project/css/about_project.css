@@ -1,0 +1,13 @@
+html, body {
+    height: 100%;
+}
+
+body {
+    background-image: linear-gradient(#e66465, #9198e5);
+    font-size: 18px;
+}
+
+
+h1 {
+    color:#FFFFFF;
+}
