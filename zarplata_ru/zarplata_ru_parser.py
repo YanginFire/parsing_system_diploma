@@ -25,7 +25,7 @@ def parse_zarplata_ru_vacancies(page, text):
     if response.status_code == 200:
         vacancies = response.json()["items"]
 
-        data = list(map(parse_zarplata_ru_vacancy, vacancies))
+        data = list(map(parse_vacancy, vacancies))
         return data
 
     else:
@@ -34,9 +34,9 @@ def parse_zarplata_ru_vacancies(page, text):
         return None
 
 
-def parse_zarplata_ru_vacancy(vacancy):
+def parse_vacancy(vacancy):
     title = vacancy["name"]
-    skills = get_job_description_zarplata_ru(vacancy) or ""
+    skills = get_job_description(vacancy) or ""
     salary_from = vacancy["salary"]["from"] if vacancy.get("salary") and vacancy["salary"].get("from") else ""
     salary_to = vacancy["salary"]["to"] if vacancy.get("salary") and vacancy["salary"].get("to") else ""
     schedule = vacancy["schedule"]["name"] if vacancy.get("schedule") else ""
@@ -47,7 +47,7 @@ def parse_zarplata_ru_vacancy(vacancy):
     return title, skills, salary_from, salary_to, schedule, experience, city, employer
 
 
-def get_job_description_zarplata_ru(vacancy):
+def get_job_description(vacancy):
     return vacancy['snippet']['requirement']
 
 
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     data = []
     for i in range(len(lang)):
         for page in range(0, 200):
-            vacancies_data = parse_zarplata_ru_vacancy(page, lang[i])
+            vacancies_data = parse_zarplata_ru_vacancies(page, lang[i])
             if vacancies_data:
                 data += vacancies_data
             else:
@@ -64,7 +64,7 @@ if __name__ == "__main__":
         df = pd.DataFrame(data,
                             columns=["Название вакансии", "Ключевые навыки", "Начальная зарплата", "Конечная зарплата",
                                         "График работы", "Требуемый опыт", "Город", "Работодатель"])
-        df.to_excel(f"vacancies_{lang[i]}_zarplata_ru_{date.today()}.xlsx", index=False)
+        df.to_excel(f"vacancies_{lang[i]}_{date.today()}.xlsx", index=False)
         print("Excel файл создан успешно.")
         data = []
         time.sleep(3)

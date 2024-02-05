@@ -5,7 +5,7 @@ from user_controls_nav_bar.app_bar import Nav_bar
 
 
 def main(page: ft.Page):
-    page.theme_mode = "dark"
+    page.theme_mode = "light"
     page.appbar = Nav_bar(page)
     myRouter = Router(page)
 
