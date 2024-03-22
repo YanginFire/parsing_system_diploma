@@ -9,7 +9,7 @@ st.set_page_config(page_title="Dashboard Vacancy Analysis", page_icon=":bar_char
 # загрузка датафрейма на сайт
 
 df = pd.read_excel(
-    io='C:/Users/User/Desktop/diploma/clear_dataframe.xlsx',
+    io='C:/Users/Yangin/Desktop/VKR/parsing_system_diploma/streamlit_web_app/clear_dataframe.xlsx',
     engine='openpyxl',
     sheet_name="Sheet1",
     usecols="B:I",
