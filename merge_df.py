@@ -17,7 +17,7 @@ for file_path in excel_files:
     combined_df = combined_df._append(df, ignore_index=True)
 
 # Создаем новый Excel-файл и сохраняем в него данные
-output_file = 'C:/Users/User/Desktop/diploma/df_merged_data_october_march.xlsx'
+output_file = 'C:/Users/User/Desktop/diploma/df_merged_data_october_march_all.xlsx'
 combined_df.to_excel(output_file, index=False)
 
 print("Данные сохранены в файл:", output_file)

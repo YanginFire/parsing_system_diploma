@@ -19,7 +19,7 @@ with st.sidebar:
 if selected == "🏠 Главная":
     # загрузка датафрейма на сайт
     df = pd.read_excel(
-        io='C:/Users/Yangin/Desktop/VKR/parsing_system_diploma/streamlit_web_app/clear_dataframe.xlsx',
+        io='C:/Users/User/Desktop/diploma/streamlit_web_app/clear_dataframe.xlsx',
         engine='openpyxl',
         sheet_name="Sheet1",
         usecols="B:I",
@@ -43,11 +43,17 @@ if selected == "🏠 Главная":
         options=df["Требуемый опыт"].unique(),
         default=df["Требуемый опыт"].unique()
     )
+    # фильтр города
+    city_filter = st.sidebar.multiselect(
+        "Выберите фильтр для поля 'Город': ",
+        options=df["Город"].unique(),
+        default=df["Город"].unique()
+    )
 
     # Запрос к датафрейму для осуществелния обновления таблицы
     # по тем фильтрам кототрые задает пользователь системы
     selection_query = df.query(
-        "`График работы` == @time_schedule_filter & `Требуемый опыт` == @working_experience_filter ")
+        "`График работы` == @time_schedule_filter & `Требуемый опыт` == @working_experience_filter & `Город` == @city_filter ")
     # подключение базы данных
     st.dataframe(selection_query)
 
@@ -80,17 +86,25 @@ if selected == "🏠 Главная":
         fig.update_traces(textposition='inside', textfont_size=16)
         st.plotly_chart(fig)
 
-    # Зарплаты - график
+    # Зарплаты - график Начальная зарплата
 
-    df["Зарплата"] = df["Начальная зарплата"].astype(str) + '-' + df["Конечная зарплата"].astype(str)
-    counts = df["Зарплата"].value_counts().reset_index()
-    counts.columns = ["Зарплата", 'Количество предложений']
+    counts_start = df["Начальная зарплата"].value_counts().reset_index()
+    counts_start.columns = ["Начальная зарплата", 'Количество предложений']
 
-    fig = px.bar(counts[:21], x='Зарплата', y='Количество предложений', color="Зарплата",
-                 title='Распределение популярных предложений работадателей по зарплатам')
+    fig = px.bar(counts_start, x='Начальная зарплата', y='Количество предложений', color="Начальная зарплата",
+                 title='Распределение популярных предложений работадателей по начальным зарплатам', color_continuous_scale='rainbow')
     st.plotly_chart(fig, use_container_width=True)
 
-    st.dataframe(counts, use_container_width=True)
+    # Зарплаты - график Конечная зарплата
+
+    counts_end = df["Конечная зарплата"].value_counts().reset_index()
+    counts_end.columns = ["Конечная зарплата", 'Количество предложений']
+
+    fig_3 = px.bar(counts_end, x='Конечная зарплата', y='Количество предложений', color='Конечная зарплата',
+                 title='Распределение популярных предложений работадателей по конечным зарплатам', color_continuous_scale='rainbow')
+    st.plotly_chart(fig_3, use_container_width=True)
+
+    # st.dataframe(counts, use_container_width=True)
 
     # Работадатели - график
     counts_employee = df["Работодатель"].value_counts().reset_index()
@@ -103,27 +117,27 @@ if selected == "📈 Топ навыки IT":
     st.header('Топ навыки для IT-специалистов :bar_chart:', divider='rainbow')
 
     st.caption(
-        "Данный раздел веб-прилодения поможет вам определить какие навыки на данный момент"
-        " чаще всего требуют в своих вакансиях компании-работадатели."
+        "Данный раздел веб-приложения поможет Вам определить какие навыки на данный момент"
+        " чаще всего требуют в своих вакансиях Компании-работадатели."
         " Здесь представлен как и весь список, так и удобный график первых 50 навыков для удобства просмотра")
 
     # загрузка датафрейма с навыками на сайт
     df_IT_skills = pd.read_excel(
-        io='C:/Users/Yangin/Desktop/VKR/parsing_system_diploma/streamlit_web_app/top_skills_new.xlsx',
+        io='C:/Users/User/Desktop/diploma/streamlit_web_app/top_skills_new_cleared.xlsx',
         engine='openpyxl',
         sheet_name="Sheet1",
         usecols="A:B",
     )
 
-    df_IT_skills = df_IT_skills.set_index("Навык")
+
 
     st.dataframe(df_IT_skills, use_container_width=True)
 
     st.subheader('На данном графике представлены первые :blue[50 навыков] необходимые для каждого специалиста в '
                  'области IT :sunglasses:')
 
-    fig = px.bar(df_IT_skills[:50], y=df_IT_skills['Частота'][:50], height=400)
-    st.plotly_chart(fig, theme="streamlit", use_container_width=True)
+    fig = px.bar(df_IT_skills, x=df_IT_skills['Навык'][:50], y=df_IT_skills['Частота'][:50], color=df_IT_skills['Навык'][:50], height=400)
+    st.plotly_chart(fig, use_container_width=True)
 
 if selected == "❓ О проекте":
     st.header('О проекте :bar_chart:', divider='rainbow')
